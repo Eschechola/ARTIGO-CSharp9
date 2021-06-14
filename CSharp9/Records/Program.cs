@@ -2,59 +2,77 @@
 
 namespace Records
 {
+    static class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("");
+        }
+    }
+
     //O operador INIT obriga inicialzar a instância junto com o valor das propriedades
     public class Pessoa
     {
         public string Nome { get; init; }
         public string Sobrenome { get; init; }
 
-        Pessoa pessoa = new Pessoa
+        public Pessoa()
         {
-            Nome = "Lucas",
-            Sobrenome = "Eschechola"
-        };
+            Pessoa pessoa = new Pessoa
+            {
+                Nome = "Lucas",
+                Sobrenome = "Eschechola"
+            };
 
-        //Como ja foi inicializado, não posso fazer uma nova atribuição
-        //Exemplo, essa atribuição não iria funcionar
-        //pessoa.Nome = "Gabriel"
+            //Como ja foi inicializado, não posso fazer uma nova atribuição
+            //Exemplo, essa atribuição não iria funcionar
+            //pessoa.Nome = "Gabriel"
+        }
     }
 
 
-    public data class PessoaData
+    public record PessoaRecord
     {
         public string Nome { get; init; }
         public string Sobrenome { get; init; }
 
-
-        //pega os mesmos valores do objeto anterior 
-        //mudando somente o informado
-        PessoaData pessoa = new PessoaData
+        public PessoaRecord()
         {
-            Nome = "Lucas",
-            Sobrenome = "Eschechola"
-        };
+            //pega os mesmos valores do objeto anterior 
+            //mudando somente o informado
+            PessoaRecord pessoa = new PessoaRecord
+            {
+                Nome = "Lucas",
+                Sobrenome = "Eschechola"
+            };
 
-        PessoaData outraPessoa = pessoa with { Sobrenome = "Gabriel" };
+            PessoaRecord outraPessoa = pessoa with { Sobrenome = "Gabriel" };
+        }
     }
 
     //classe com atributo init dentro das propriedades
     //de forma simplificada 
-    public data class PessoaInit { string Nome, string Sobrenome }
+    public record PessoaInit(string Nome, string Sobrenome);
 
 
     //utilizando Record classes juntamente com herança
-    public data class PessoaHeranca { string Nome, string Sobrenome }
-    public data class Emprego : Pessoa { double Salario }
+    public record PessoaHeranca(string Nome, string Sobrenome);
+
+    public record PessoaJuridica(string Nome, string Sobrenome, string CNPJ) 
+        : PessoaHeranca(Nome, Sobrenome);
 
 
-    //atribuindo a o objeto herdado
-    var pessoaEmpregada = new Emprego
+    public class PessoaTeste
     {
-        Nome = "Gabriel",
-        Sobrenome = "Silva",
-        Salario = "1200"
+        public PessoaTeste()
+        {
+            var pessoaJuridica = new PessoaJuridica(
+                Nome: "Gabriel",
+                Sobrenome: "Silva",
+                CNPJ: "00.000.000/0001-00");
+
+            //atribuindo a o objeto herdado
+            var pessoa = pessoaJuridica with { CNPJ = "00.000.000/2222-33" };
+        }
     }
-
-    var pessoa = pessoaEmpregada with { Salario = "2000" };
-
 }
